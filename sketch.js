@@ -1,23 +1,32 @@
 let canvas;
+var pg;
+
+var blurShader;
 
 var N;
 var W;
 var D;
 var CD;
 
+function preload(){
+    blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
+}
+
 function setup(){
-    canvas = createCanvas(windowWidth, windowHeight);
+    canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     noLoop();
 
     reset();
 }
 
 function draw(){
-
+    //image(pg, -width/2, -height/2, width, height);
 }
 
 function reset(){
-    var bw = round(random(1));
+    pg = createGraphics(width, height);
+    pg.colorMode(HSB, 100);
+    var bw = round(random(1)) == 0;
     while(true){
         N = round(random(4, 20));
         W = height*0.1*random(0.67, 2.6);
@@ -35,11 +44,41 @@ function reset(){
         var ox = width/2 - tw/2 + W/2;
         var oy = height/2 - H/2;
 
-        background(22 + 200*bw);
-        push();
-        translate(ox, oy);
-        fill(233 - 200*bw);
-        noStroke();
+        pg.background(random(83, 90));
+        var ff, rr;
+        ff = random(90, 100);
+        if(bw)
+            ff = random(8, 14);
+        rr = 1 + (1-bw)*random(0, 2.0);
+        var ss = random(3);
+        var rw = tw;
+        var rh = H;
+        var rry = 0;
+        if(ss < 1){
+            var rrd = random(30, height/4);
+            rw = width-rrd;
+            rh = height-rrd;
+        }
+        else if(ss < 2){
+            rw = width;
+            rh = height;
+        }
+        else{
+            rry = random(-height*.1, height*.1);
+        }
+        pg.fill(40, 0, ff);
+        pg.noStroke();
+        pg.rectMode(CENTER);
+        pg.rect(width/2, height/2 + rry, rw, rh);
+        pg.push();
+        pg.translate(ox, oy);
+
+        ff = random(8, 14);
+        if(bw)
+            ff = random(90, 100);
+        rr = 1 + bw*random(0, 2.0);
+        pg.fill(40, 0, ff);
+        pg.noStroke();
         var good = true;
         var dir = 1;
         var frq = N*PI/8*round(random(1, 4));
@@ -47,8 +86,7 @@ function reset(){
             var amm = random(0.8, 1.17);
             if(PP)
                 amm = 1 + .1*sin((k-N/2)*frq)
-            beginShape();
-            print(p1.y, height/2)
+            pg.beginShape();
             if(abs(p1.y-H/2) > height/2*0.8)
                 good = false;
             if(abs(p1.x+W/2) > width/2*0.8)
@@ -59,55 +97,60 @@ function reset(){
                 skip = true;
             }
             if(!skip){
-                vertex(p1.x, p1.y);
-                vertex(p2.x, p2.y);
+                pg.vertex(p1.x, p1.y);
+                pg.vertex(p2.x, p2.y);
             }
             p1.add(0, dir*H*amm);
             p2.add(0, dir*H*amm);
-            print(p1.y, height/2)
             if(abs(p1.y-H/2) > height/2*0.7)
                 good = false;
             if(abs(p1.x+W/2) > width/2*0.8)
                 good = false;
             if(!skip){
-                vertex(p2.x, p2.y);
-                vertex(p1.x, p1.y);
+                pg.vertex(p2.x, p2.y);
+                pg.vertex(p1.x, p1.y);
             }
             // good = true;
-            endShape();
+            pg.endShape();
             p1.set(p2.x, p2.y);
             p2.add(0, -dir*H*CD);
 
             if(k == N-1)
                 break;
 
-
             var conn = true;
             if(random(1000) > 1960)
                 conn = false;
-            beginShape();
+            pg.beginShape();
             if(conn && !skip && (p1.x+ox+D+W < width-20)){
-                vertex(p1.x-2, p1.y);
-                vertex(p2.x-2, p2.y);
+                pg.vertex(p1.x-2, p1.y);
+                pg.vertex(p2.x-2, p2.y);
             }
             p1.add(D, 0);
             p2.add(D, 0);
             if(conn && !skip && (p1.x+ox+D+W < width-20)){
-                vertex(p2.x+2, p2.y);
-                vertex(p1.x+2, p1.y);
+                pg.vertex(p2.x+2, p2.y);
+                pg.vertex(p1.x+2, p1.y);
             }
             if(random(1000) > 1980)
                 W = W * random(0.5, 1.4);
             p2.set(p2.x+W, p1.y);
-            endShape();
+            pg.endShape();
             dir = -dir;
         }
-        pop();
+        pg.pop();
         if(good)
             break;
     }
-    print("\n");
+    // rendering
 
+    shader(blurShader);
+    fill(255);
+    blurShader.setUniform('tex0', pg);
+    blurShader.setUniform('texelSize', [1 / width, 1 / height]);
+    blurShader.setUniform('grunge', random(1.6));
+    blurShader.setUniform('grunge2', random(0.3, 0.6));
+    rect(-width/2, -height/2, width, height);
     //fill(255,0,0);
     //ellipse(width/2, height/2, 20, 20);
 }
@@ -126,7 +169,6 @@ function reset1(){
     var tw = N*W + (N-1.)*D;
     push();
     translate(width/2, height/2);
-    print(N, W, D, tw);
 
     var x0 = -tw/2+W/2;
     var x1 = +tw/2-W/2;
@@ -154,6 +196,7 @@ function mouseClicked(){
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  reset();
+    resizeCanvas(windowWidth, windowHeight);
+    pg = createGraphics(width, height);
+    reset();
 }
