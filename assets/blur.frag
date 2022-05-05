@@ -110,9 +110,9 @@ vec4 distort(){
 	float amp2 = .2 + .3*frq3;
 	float nx2 = amp2*(-.5 + noise(uv/texelSize*.13+31.3414));
 	float ny2 = amp2*(-.5 + noise(uv/texelSize*.13+1891.88314));
-	vec2 duv2 = texelSize * vec2(nx2, ny2) * .56;
+	vec2 duv2 = texelSize * vec2(nx2, ny2) * .38;
 
-	vec4 tex = texture2D(tex0, uv + duv*1.6 + duv2); // middle middle -- the actual texel / pixel
+	vec4 tex = texture2D(tex0, uv + duv*1.2 + duv2); // middle middle -- the actual texel / pixel
 	//tex += texture2D(tex0, uv + vec2(-offset.x, -offset.y)); // top left
 	//tex += texture2D(tex0, uv + vec2(0.0, -offset.y)); // top middle
 	//tex += texture2D(tex0, uv + vec2(offset.x, -offset.y)); // top right
@@ -147,7 +147,7 @@ vec4 salt(){
 	vec4 tex = tex1*2. + 1.0*tex2;
 	tex.a = 1.0;
 
-	tex.rgb *= 0.4;
+	tex.rgb *= 0.23;
 
 	return tex;
 }
@@ -157,7 +157,7 @@ void main() {
 	vec4 d = distort();
 	vec4 b = blur(3.);
 
-	vec4 res = d + (b-d)*pow(grunge2, 1.5) + n*.06;
+	vec4 res = d + (b-d)*pow(frq4, 1.5) + n*.06;
 
 	res.x = abs(res.x);
 	if(res.x > 1.0)
