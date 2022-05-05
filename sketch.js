@@ -142,7 +142,13 @@ function reset(){
         if(good)
             break;
     }
-    // rendering
+
+
+    // !!!!!!!!!
+    // !!!!!!!!!
+    // !!!!!!!!!
+    // !!!!!!!!!
+    // RENDERING
 
     shader(blurShader);
     fill(255);
@@ -198,5 +204,9 @@ function mouseClicked(){
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     pg = createGraphics(width, height);
+    reset();
+}
+
+function touchStarted() {
     reset();
 }
