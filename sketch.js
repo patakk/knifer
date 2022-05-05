@@ -12,10 +12,24 @@ function preload(){
     blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
 }
 
+function handleStart(){
+    if(width < height){
+        reset();
+    }
+}
+
+
+function handleEnd(){
+    print('end')
+}
+
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     pg = createGraphics(width, height);
     noLoop();
+
+    canvas.elt.addEventListener('touchstart', handleStart);
+    canvas.elt.addEventListener('touchend', handleEnd);
 
     reset();
 }
@@ -210,13 +224,4 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     pg = createGraphics(width, height);
     reset();
-}
-
-var di=true;
-function touchStarted() {
-    if(width < height){
-        if(di)
-            reset();
-        di=!di;
-    }
 }
