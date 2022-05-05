@@ -137,7 +137,11 @@ void main() {
 	vec4 d = distort();
 	vec4 b = blur(3.);
 
-	gl_FragColor = d + (b-d)*grunge2 + n*.08;
+	vec4 res = d + (b-d)*pow(grunge2, 1.5) + n*.06;
 
+	res.g *= 1. - (.03*(mod(grunge2+grunge, 1.0)));
+	res.b *= 1. - (.042*(mod(grunge2+grunge, 1.0)));
+
+	gl_FragColor = res;
 	//gl_FragColor = blur();
 }

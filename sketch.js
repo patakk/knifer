@@ -29,14 +29,15 @@ function reset(){
     var bw = round(random(1)) == 0;
     while(true){
         N = round(random(4, 20));
-        W = height*0.1*random(0.67, 2.6);
-        D = height*0.015*random(0.5, 1.2);
-        H = height*random(0.4, 0.6);
+        if(width < height)
+            N = round(random(3, 7));
+        W = min(width, height)*0.1*random(0.67, 2.1);
+        D = min(width, height)*0.015*random(0.5, 1.2);
+        H = min(width, height)*random(0.4, 0.6);
 
         CD = random(0.023, 0.06);
 
         var PP = random(100) < 50;
-        var d = height * random(0.08, 0.13);
         var p1 = createVector(-W/2, 0);
         var p2 = createVector(+W/2, 0);
 
@@ -51,7 +52,7 @@ function reset(){
             ff = random(8, 14);
         rr = 1 + (1-bw)*random(0, 2.0);
         var ss = random(3);
-        var rw = tw;
+        var rw = min(tw, width - random(30, height/4));
         var rh = H;
         var rry = 0;
         if(ss < 1){
@@ -89,11 +90,9 @@ function reset(){
             pg.beginShape();
             if(abs(p1.y-H/2) > height/2*0.8)
                 good = false;
-            if(abs(p1.x+W/2) > width/2*0.8)
-                good = false;
 
             var skip = false;
-            if(p1.x+ox < 20 || p1.x+W+ox > width-20){
+            if(p1.x+ox < 80 || p1.x+W+ox > width-80){
                 skip = true;
             }
             if(!skip){
@@ -103,8 +102,6 @@ function reset(){
             p1.add(0, dir*H*amm);
             p2.add(0, dir*H*amm);
             if(abs(p1.y-H/2) > height/2*0.7)
-                good = false;
-            if(abs(p1.x+W/2) > width/2*0.8)
                 good = false;
             if(!skip){
                 pg.vertex(p2.x, p2.y);
@@ -122,13 +119,13 @@ function reset(){
             if(random(1000) > 1960)
                 conn = false;
             pg.beginShape();
-            if(conn && !skip && (p1.x+ox+D+W < width-20)){
+            if(conn && !skip && (p1.x+ox+D+W < width-80)){
                 pg.vertex(p1.x-2, p1.y);
                 pg.vertex(p2.x-2, p2.y);
             }
             p1.add(D, 0);
             p2.add(D, 0);
-            if(conn && !skip && (p1.x+ox+D+W < width-20)){
+            if(conn && !skip && (p1.x+ox+D+W < width-80)){
                 pg.vertex(p2.x+2, p2.y);
                 pg.vertex(p1.x+2, p1.y);
             }
