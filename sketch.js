@@ -24,7 +24,6 @@ function draw(){
 }
 
 function reset(){
-    pg = createGraphics(width, height);
     pg.colorMode(HSB, 100);
     var bw = round(random(1)) == 0;
     while(true){
