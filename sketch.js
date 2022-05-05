@@ -208,5 +208,5 @@ function windowResized() {
 }
 
 function touchStarted() {
-    reset();
+    //reset();
 }
