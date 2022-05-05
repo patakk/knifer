@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 // lets grab texcoords just for fun
 varying vec2 vTexCoord;
@@ -129,11 +129,25 @@ vec4 distort(){
 	return tex;
 }
 
+float power(float p, float g){
+    if (p < 0.5)
+        return 0.5 * pow(2.*p, g);
+    else
+        return 1. - 0.5 * pow(2.*(1. - p), g);
+}
+
 vec4 salt(){
 	vec2 uv = vTexCoord;
 
-	vec4 tex = vec4(noise((uv+grunge2*.1+grunge*.1)/texelSize/2.));
+	vec4 tex1 = vec4(noise((uv+grunge2*.1+grunge*.1)/texelSize/1.));
+	vec4 tex2 = vec4(noise((uv+grunge2*.1+grunge*.1)/texelSize/3.7));
+	tex2.r = power(tex2.r, 3.);
+	tex2.g = tex2.r;
+	tex2.b = tex2.r;
+	vec4 tex = tex1*2. + 1.0*tex2;
 	tex.a = 1.0;
+
+	tex.rgb *= 0.4;
 
 	return tex;
 }
@@ -144,6 +158,12 @@ void main() {
 	vec4 b = blur(3.);
 
 	vec4 res = d + (b-d)*pow(grunge2, 1.5) + n*.06;
+
+	res.x = abs(res.x);
+	if(res.x > 1.0)
+		res.x = 1.0-(res.x-1.0);
+	res.y = res.x;
+	res.z = res.x;
 
 	res.g *= 1. - (.03*(mod(grunge2+grunge, 1.0)));
 	res.b *= 1. - (.042*(mod(grunge2+grunge, 1.0)));
