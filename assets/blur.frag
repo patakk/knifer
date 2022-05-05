@@ -8,6 +8,12 @@ uniform sampler2D tex0;
 uniform vec2 texelSize;
 uniform float grunge;
 uniform float grunge2;
+uniform float frq1;
+uniform float frq2;
+uniform float frq3;
+uniform float frq4;
+uniform float frq5;
+uniform float frq6;
 
 // Simplex 2D noise
 //
@@ -95,18 +101,18 @@ vec4 distort(){
 	vec2 offset = texelSize * spread;
 
 	// get all the neighbor pixels!
-	float amp = .4*grunge;
-	float nx = amp*(-.5 + noise(uv/texelSize*.008+31.3414));
-	float ny = amp*(-.5 + noise(uv/texelSize*.008+1891.88314));
+	float amp = .4*frq2;
+	float nx = amp*(-.5 + noise(uv/texelSize*frq1+31.3414));
+	float ny = amp*(-.5 + noise(uv/texelSize*frq1+1891.88314));
 	vec2 duv = texelSize * vec2(nx, ny);
 
 
-	float amp2 = .2 + .3*grunge;
+	float amp2 = .2 + .3*frq3;
 	float nx2 = amp2*(-.5 + noise(uv/texelSize*.13+31.3414));
 	float ny2 = amp2*(-.5 + noise(uv/texelSize*.13+1891.88314));
-	vec2 duv2 = texelSize * vec2(nx2, ny2);
+	vec2 duv2 = texelSize * vec2(nx2, ny2) * .56;
 
-	vec4 tex = texture2D(tex0, uv + duv*0. + duv2); // middle middle -- the actual texel / pixel
+	vec4 tex = texture2D(tex0, uv + duv*1.6 + duv2); // middle middle -- the actual texel / pixel
 	//tex += texture2D(tex0, uv + vec2(-offset.x, -offset.y)); // top left
 	//tex += texture2D(tex0, uv + vec2(0.0, -offset.y)); // top middle
 	//tex += texture2D(tex0, uv + vec2(offset.x, -offset.y)); // top right

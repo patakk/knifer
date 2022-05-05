@@ -45,7 +45,7 @@ function reset(){
         var ox = width/2 - tw/2 + W/2;
         var oy = height/2 - H/2;
 
-        pg.background(random(83, 90));
+        pg.background(random(75, 85));
         var ff, rr;
         ff = random(90, 100);
         if(bw)
@@ -153,6 +153,12 @@ function reset(){
     blurShader.setUniform('texelSize', [1 / width, 1 / height]);
     blurShader.setUniform('grunge', random(1.6));
     blurShader.setUniform('grunge2', random(0.3, 0.6));
+    blurShader.setUniform('frq1', random(0.003, 0.008));
+    blurShader.setUniform('frq2', random(0, 1));
+    blurShader.setUniform('frq3', random(0, 1));
+    blurShader.setUniform('frq4', random(0, 1));
+    blurShader.setUniform('frq5', random(0, 1));
+    blurShader.setUniform('frq6', random(0, 1));
     rect(-width/2, -height/2, width, height);
     //fill(255,0,0);
     //ellipse(width/2, height/2, 20, 20);
