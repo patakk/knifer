@@ -14,6 +14,7 @@ function preload(){
 
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    pg = createGraphics(width, height);
     noLoop();
 
     reset();
@@ -194,7 +195,8 @@ function reset1(){
 }
 
 function mouseClicked(){
-    reset();
+    if(width > height)
+        reset();
 }
 
 function windowResized() {
@@ -204,5 +206,6 @@ function windowResized() {
 }
 
 function touchStarted() {
-    //reset();
+    if(width < height)
+        reset();
 }
