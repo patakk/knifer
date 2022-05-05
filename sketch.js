@@ -195,8 +195,9 @@ function reset1(){
 }
 
 function mouseClicked(){
-    if(width > height)
+    if(width > height){
         reset();
+    }
 }
 
 function windowResized() {
@@ -205,7 +206,11 @@ function windowResized() {
     reset();
 }
 
+var di=true;
 function touchStarted() {
-    if(width < height)
-        reset();
+    if(width < height){
+        if(di)
+            reset();
+        di=!di;
+    }
 }
