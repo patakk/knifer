@@ -36,7 +36,7 @@ function setup(){
     click.textAlign(CENTER, CENTER);
     click.fill(90);
     if(width < height)
-        click.textSize(160);
+        click.textSize(130);
     else
         click.textSize(200);
     click.text('Click', width/2, height/2);
