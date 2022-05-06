@@ -293,14 +293,15 @@ function knifer(){
         var rw = min(tw, width - random(30, height/4));
         var rh = H;
         var rry = 0;
-        ss = 0;
         if(ss < 1){
-            var rrd = random(28, height/4*0+29);
+            var rrdx = random(28, height/4*0+29);
+            var rrdy = rrdx;
             if(random(100) < 50){
-                rrd = random(200, height/4*0+201);
+                rrdy = random(200, height/3);
+                rrdx = random(0, height/3);
             }
-            rw = width-rrd;
-            rh = height-rrd;
+            rw = width-rrdx;
+            rh = height-rrdy;
         }
         else if(ss < 2){
             rw = width;
