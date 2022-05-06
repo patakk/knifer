@@ -8,6 +8,8 @@ var W;
 var D;
 var CD;
 
+var reset = knifer;
+
 function preload(){
     blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
 }
@@ -35,10 +37,205 @@ function setup(){
 }
 
 function draw(){
+    reset();
     //image(pg, -width/2, -height/2, width, height);
 }
 
-function reset(){
+function notWorking(){
+    randomSeed(random(millis()));
+    noiseSeed(random(millis()*12.314));
+    pg.colorMode(HSB, 100);
+    pg.rectMode(CENTER);
+    pg.background(90);
+
+    var wwidth = min(width, height) * 0.6;
+    var wheight = wwidth;
+
+    pg.stroke(20);
+    pg.noFill();
+    pg.push();
+    pg.translate(width/2, height/2);
+    pg.rect(0, 0, wwidth, wheight);
+
+    N = round(mouseY/height*80) + 3;
+    pg.noStroke();
+    pg.fill(10);
+    //pg.stroke(0);
+    //pg.fill(0, 100, 100);
+
+    var Ny = N;
+    for(var ny = 0; ny < Ny; ny++){
+        var ddy = wheight/Ny;
+        var y = map(ny, 0, N-1, ddy/2, wheight-ddy/2) - wheight/2;
+
+        var Nx = ny+2;
+        var ddx = wwidth/Nx;
+        for(var nx = 0; nx < Nx; nx++){
+            if(Nx == 1){
+                pg.rect(0, y, ddy+.35, ddy+.35);
+            }
+            else{
+                var x = map(nx, 0, Nx-1, ddx/2, wwidth-ddx/2) - wwidth/2;
+                x = x + frameCount/30. * ddx;
+                x = (x+wwidth/2)%(wwidth) - wwidth/2;
+                pg.stroke(90);
+                pg.noStroke();
+                pg.fill(90);
+                pg.fill(3, 100, 100);
+                if(x-ddy/4-(ddy+.35+ddy/2)/2 > -wwidth/2 && x-ddy/4+(ddy+.35+ddy/2)/2 < +wwidth/2)
+                    pg.rect(x-ddy/4, y, ddy+.35, ddy+.35);
+                pg.fill(10);
+                if(x-(ddy+.35)/2 > -wwidth/2 && x+(ddy+.35)/2 < +wwidth/2)
+                    pg.rect(x, y, ddy+.35, ddy+.35);
+            }
+        }
+    }
+
+    pg.pop();
+
+    shaderOnCanvas(pg);
+}
+
+function krugovi(){
+    randomSeed(random(millis()));
+    noiseSeed(random(millis()*12.314));
+    pg.colorMode(HSB, 100);
+    pg.rectMode(CENTER);
+    pg.background(90);
+
+    var wwidth = min(width, height) * 0.6;
+    var wheight = wwidth;
+
+    pg.stroke(20);
+    pg.noFill();
+    pg.push();
+    pg.translate(width/2, height/2);
+    pg.rect(0, 0, wwidth, wheight);
+
+    N = round(random(3))*0+13;
+    for(var k = 0; k < N; k++){
+        var ri = round(random(5))*0;
+        if(ri == 0){
+            var nn = 3;
+            nn = ceil(nn/2)*2;
+            var x = round(random(0, nn-1))/(2-1.)*wwidth/nn - (nn-1)/2*wwidth/nn;
+            var y = round(random(0, nn-1))/(2-1.)*wheight/nn - (nn-1)/2*wheight/nn;
+            var w = 20;
+            var h = 20;
+            if(y>0){
+                h = (wheight/2 - y)*2;
+            }
+            else{
+                h = (y - (-wheight/2))*2;
+            }
+            if(x>0){
+                w = (wwidth/2 - x)*2;
+            }
+            else{
+                w = (x - (-wwidth/2))*2;
+            }
+            var d = min(w, h);
+
+
+            if(random(100) < 90){
+                if(random(100) < 50){
+                    if(random(100) < 50){
+                        pg.fill(10);
+                        pg.noStroke();
+                    }
+                    else{
+                        pg.fill(90);
+                        pg.stroke(10);
+                    }
+                }
+                else{
+                    pg.noFill();
+                    pg.stroke(10);
+                }
+                pg.ellipse(x, y, d+.0, d+.0);
+            }
+            else {
+                pg.fill(10);
+                pg.noStroke();
+                pg.rect(x, y, d+.0, d+.0);
+            }  
+        }
+    }
+
+    pg.pop();
+
+    shaderOnCanvas(pg);
+}
+
+function simpleKnifer(){
+    randomSeed(random(millis()));
+    noiseSeed(random(millis()*12.314));
+    pg.colorMode(HSB, 100);
+
+    var total = random(0.3, 0.8)*width;
+    W = min(height, width)*random(0.067, 0.19);
+    D = min(width, height)*0.015*random(0.5, 1.2);
+    total = (floor(total/(W+D))+1.0)*(W+D);
+    N = total/(W+D);
+    var tw = N*W + (N-1.)*D;
+    H = min(width, height)*random(0.4, 0.6);
+
+
+    pg.background(100);
+    
+    pg.fill(0);
+    pg.rectMode(CENTER);
+    var frq = random(0.01, 2);
+    var yy = [];
+    var sfrq = PI/3*1;
+    for(var k = 0; k < N; k++){
+        var p = map(k, 0, N-1, 0, 1);
+
+        var dy = (height-H)/2 * 0.8 * (-1 + 2*noise(k*frq));
+
+        dy = height*0.1*sin((k)*sfrq);
+
+        var x = width/2 - ((N-1.)/2. - k)*(W+D);
+        var y = height/2 + dy;
+        var hh = H;
+        var dd = D * random(0.8, 1.05);
+        if(k > 0){
+            if(k%2 == 1){
+                var ddy = y-hh/2 - yy[k-1][1];
+                y -= ddy/2;
+                hh += ddy;
+            }
+            else{
+                var ddy = y+hh/2 - yy[k-1][0];
+                y -= ddy/2;
+                hh -= ddy;
+            }
+
+            var cx = (x + width/2 - ((N-1.)/2. - (k-1))*(W+D))/2;
+            var cy;
+
+            if(k%2 == 1){
+                cy = y - hh/2 + dd/2;
+            }
+            else{
+                cy = y + hh/2 - dd/2;
+            }
+            //pg.fill(0,100,100);
+            pg.rect(cx, cy, 2*dd, dd);
+        }
+        yy.push([y+hh/2, y-hh/2]);
+        pg.fill(0);
+        pg.rect(x, y, W, hh);
+    }
+
+    //pg.fill(0, 80, 90);
+    //pg.noStroke();
+    //pg.ellipse(width/2, height/2, 20, 20);
+
+    shaderOnCanvas(pg);
+}
+
+function knifer(){
     pg.colorMode(HSB, 100);
     var bw = round(random(1)) == 0;
     while(true){
@@ -160,7 +357,13 @@ function reset(){
     // !!!!!!!!!
     // !!!!!!!!!
     // RENDERING
+    shaderOnCanvas(pg);
+    //fill(255,0,0);
+    //ellipse(width/2, height/2, 20, 20);
+}
 
+
+function shaderOnCanvas(pg){
     shader(blurShader);
     fill(255);
     blurShader.setUniform('tex0', pg);
@@ -174,44 +377,6 @@ function reset(){
     blurShader.setUniform('frq5', random(0, 1));
     blurShader.setUniform('frq6', random(0, 1));
     rect(-width/2, -height/2, width, height);
-    //fill(255,0,0);
-    //ellipse(width/2, height/2, 20, 20);
-}
-
-function reset1(){
-    N = round(random(3, 6));
-    W = height*0.1*random(0.8, 1.2);
-    D = height*0.015*random(0.8, 1.2);
-
-    background(233);
-    noStroke();
-    fill(0);
-    rectMode(CENTER);
-
-
-    var tw = N*W + (N-1.)*D;
-    push();
-    translate(width/2, height/2);
-
-    var x0 = -tw/2+W/2;
-    var x1 = +tw/2-W/2;
-    var co = 0;
-    var H = W*5;
-    var rd = random(0.7, 0.94);
-    var dir = -1;
-    for(var i = 0; i < N; i++){
-        var x = map(i, 0, N-1, x0, x1);
-        dir = -dir;
-        if(i < N-1){
-            var xx = x + W/2 + D/2;
-            var dd = D*rd;
-            var yy = dir*(-H/2+dd/2);
-            rect(xx, yy, W, dd);
-        }
-        rect(x, 0, W, H);
-        co++;
-    }
-    pop();
 }
 
 function mouseClicked(){

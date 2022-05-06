@@ -56,7 +56,7 @@ vec4 blur(float amp){
     //the amount to blur, i.e. how far off center to sample from 
     //1.0 -> blur by one pixel
     //2.0 -> blur by two pixels, etc.
-    float radius = grunge2*amp;
+    float radius = (.5+.5*grunge2)*amp;
     vec2 blur = radius*texelSize; 
     
     //the direction of our blur
@@ -101,18 +101,19 @@ vec4 distort(){
 	vec2 offset = texelSize * spread;
 
 	// get all the neighbor pixels!
-	float amp = .4*frq2;
+	float amp = .56*frq2;
 	float nx = amp*(-.5 + noise(uv/texelSize*frq1+31.3414));
 	float ny = amp*(-.5 + noise(uv/texelSize*frq1+1891.88314));
 	vec2 duv = texelSize * vec2(nx, ny);
 
 
-	float amp2 = .2 + .3*frq3;
+	float amp2 = .4 + .3*frq3;
 	float nx2 = amp2*(-.5 + noise(uv/texelSize*.13+31.3414));
 	float ny2 = amp2*(-.5 + noise(uv/texelSize*.13+1891.88314));
 	vec2 duv2 = texelSize * vec2(nx2, ny2) * .38;
 
 	vec4 tex = texture2D(tex0, uv + duv*1.2 + duv2); // middle middle -- the actual texel / pixel
+	
 	//tex += texture2D(tex0, uv + vec2(-offset.x, -offset.y)); // top left
 	//tex += texture2D(tex0, uv + vec2(0.0, -offset.y)); // top middle
 	//tex += texture2D(tex0, uv + vec2(offset.x, -offset.y)); // top right
@@ -157,16 +158,23 @@ void main() {
 	vec4 d = distort();
 	vec4 b = blur(3.);
 
-	vec4 res = d + (b-d)*pow(frq4, 1.5) + n*.06;
+	vec4 res = d + (b-d)*pow(.4+ .2*frq4, 1.5) + n*.08;
 
-	res.x = abs(res.x);
-	if(res.x > 1.0)
-		res.x = 1.0-(res.x-1.0);
-	res.y = res.x;
-	res.z = res.x;
+	res.r = abs(res.r);
+	if(res.r > 1.0)
+		res.r = 1.0-(res.r-1.0);
+	res.g = abs(res.g);
+	if(res.g > 1.0)
+		res.g = 1.0-(res.g-1.0);
+	res.b = abs(res.b);
+	if(res.b > 1.0)
+		res.b = 1.0-(res.b-1.0);
 
-	res.g *= 1. - (.03*(mod(grunge2+grunge, 1.0)));
-	res.b *= 1. - (.042*(mod(grunge2+grunge, 1.0)));
+	res.g *= 1. - (.03*frq5);
+	res.b *= 1. - (.042*frq5);
+
+	res.rgb *= 0.9; //(0.8 + 0.2*frq6);
+	//res.rgb = 1. - res.rgb;
 
 	gl_FragColor = res;
 	//gl_FragColor = blur();
