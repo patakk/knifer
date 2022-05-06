@@ -12,6 +12,8 @@ var reset = knifer;
 let helvetica;
 let blurShader;
 
+var shouldReset = true;
+
 function preload() {
     helvetica = loadFont('assets/HelveticaNeueBd.ttf');
     blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
@@ -32,16 +34,21 @@ function handleEnd(){
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     pg = createGraphics(width, height);
-    noLoop();
 
     canvas.elt.addEventListener('touchstart', handleStart);
     canvas.elt.addEventListener('touchend', handleEnd);
 
-    reset();
+    if(shouldReset){
+        reset();
+        shouldReset = false;
+    }
 }
 
 function draw(){
-    reset();
+    if(shouldReset){
+        reset();
+        shouldReset = false;
+    }
     //image(pg, -width/2, -height/2, width, height);
 }
 
@@ -404,12 +411,12 @@ function shaderOnCanvas(pg){
 
 function mouseClicked(){
     if(width > height){
-        reset();
+        shouldReset = true;
     }
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     pg = createGraphics(width, height);
-    reset();
+    shouldReset = true;
 }
