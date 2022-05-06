@@ -413,6 +413,10 @@ function handleStart(){
     }
 }
 
+function keyPressed(){
+    shouldReset = true;
+}
+
 
 function handleEnd(){
 }
