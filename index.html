@@ -14,7 +14,6 @@
                 padding: 0;
                 margin: 0;
                 overflow:hidden;
-                font-family: "Roboto Mono", sans-serif;
             }
 
             canvas {
@@ -30,12 +29,15 @@
 				right: 0;
 			}
 
-			.txt {
+			#title {
+                font-family: "Helvetica", sans-serif, bold;
+                font-weight: bold;
 				position: absolute;
-				left: 22px;
-				top: 11px;
-				font-size: 13px;
-				color: #666666;
+				left: 10px;
+				top: 10px;
+				font-size: 29px;
+                margin: 0px;
+				color: #202020;
 				z-index: 1000;
 			    -webkit-touch-callout: none;
 			    -webkit-user-select: none;
@@ -58,7 +60,8 @@
 
     <body>
         <script src="sketch.js"></script>
-        <p class="txt">
+        <p id="title">
+            
         <p>
     </body>
 

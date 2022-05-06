@@ -1,7 +1,6 @@
 let canvas;
 var pg;
 
-var blurShader;
 
 var N;
 var W;
@@ -10,8 +9,13 @@ var CD;
 
 var reset = knifer;
 
-function preload(){
+let helvetica;
+let blurShader;
+
+function preload() {
+    helvetica = loadFont('assets/HelveticaNeueBd.ttf');
     blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
+
 }
 
 function handleStart(){
@@ -266,14 +270,22 @@ function knifer(){
         var rw = min(tw, width - random(30, height/4));
         var rh = H;
         var rry = 0;
+        ss = 0;
         if(ss < 1){
-            var rrd = random(30, height/4);
+            var rrd = random(28, height/4*0+29);
+            if(random(100) < 50){
+                rrd = random(200, height/4*0+201);
+            }
             rw = width-rrd;
             rh = height-rrd;
         }
         else if(ss < 2){
             rw = width;
             rh = height;
+            if(bw)
+                document.getElementById("title").style.color = "#CCCCCC";
+            else
+                document.getElementById("title").style.color = "#202020";
         }
         else{
             rry = random(-height*.1, height*.1);
@@ -350,6 +362,17 @@ function knifer(){
         if(good)
             break;
     }
+
+    if(pg.get(40, 35)[0] > 127)
+        pg.fill(10);
+    else
+        pg.fill(90);
+    pg.push();
+    pg.textFont(helvetica);
+    pg.textAlign(LEFT, TOP);
+    pg.textSize(50);
+    pg.text('Knifer', 27, 20);
+    pg.pop();
 
 
     // !!!!!!!!!

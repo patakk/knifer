@@ -52,6 +52,7 @@ vec4 blur(float amp){
     
     //our original texcoord for this fragment
     vec2 tc = vTexCoord;
+    tc.y = 1. - tc.y;
 
     //the amount to blur, i.e. how far off center to sample from 
     //1.0 -> blur by one pixel
@@ -85,6 +86,7 @@ vec4 blur(float amp){
 
 vec4 distort(){
 	vec2 uv = vTexCoord;
+	uv.y = 1. - uv.y;
 	// the texture is loaded upside down and backwards by default so lets flip it
 	//uv = 1.0 - uv;
 
@@ -101,7 +103,7 @@ vec4 distort(){
 	vec2 offset = texelSize * spread;
 
 	// get all the neighbor pixels!
-	float amp = .56*frq2;
+	float amp = .46*frq2;
 	float nx = amp*(-.5 + noise(uv/texelSize*frq1+31.3414));
 	float ny = amp*(-.5 + noise(uv/texelSize*frq1+1891.88314));
 	vec2 duv = texelSize * vec2(nx, ny);
@@ -110,7 +112,7 @@ vec4 distort(){
 	float amp2 = .4 + .3*frq3;
 	float nx2 = amp2*(-.5 + noise(uv/texelSize*.13+31.3414));
 	float ny2 = amp2*(-.5 + noise(uv/texelSize*.13+1891.88314));
-	vec2 duv2 = texelSize * vec2(nx2, ny2) * .38;
+	vec2 duv2 = texelSize * vec2(nx2, ny2) * .32;
 
 	vec4 tex = texture2D(tex0, uv + duv*1.2 + duv2); // middle middle -- the actual texel / pixel
 	
@@ -139,6 +141,7 @@ float power(float p, float g){
 
 vec4 salt(){
 	vec2 uv = vTexCoord;
+	uv.y = 1. - uv.y;
 
 	vec4 tex1 = vec4(noise((uv+grunge2*.1+grunge*.1)/texelSize/1.));
 	vec4 tex2 = vec4(noise((uv+grunge2*.1+grunge*.1)/texelSize/3.7));
