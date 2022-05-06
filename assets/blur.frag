@@ -151,7 +151,7 @@ vec4 salt(){
 	vec4 tex = tex1*2. + 1.0*tex2;
 	tex.a = 1.0;
 
-	tex.rgb *= 0.23;
+	tex.rgb *= 0.14;
 
 	return tex;
 }

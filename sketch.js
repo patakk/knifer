@@ -38,17 +38,16 @@ function setup(){
     canvas.elt.addEventListener('touchstart', handleStart);
     canvas.elt.addEventListener('touchend', handleEnd);
 
-    if(shouldReset){
-        reset();
-        shouldReset = false;
-    }
 }
 
 function draw(){
-    if(shouldReset){
+    if(shouldReset || frameCount == 2){
         reset();
+        shaderOnCanvas(pg);
         shouldReset = false;
     }
+
+    //print(pg)
     //image(pg, -width/2, -height/2, width, height);
 }
 
@@ -247,6 +246,10 @@ function simpleKnifer(){
 }
 
 function knifer(){
+
+    randomSeed(random(millis()));
+    noiseSeed(random(millis()*12.314));
+
     pg.colorMode(HSB, 100);
     var bw = round(random(1)) == 0;
     while(true){
@@ -289,10 +292,6 @@ function knifer(){
         else if(ss < 2){
             rw = width;
             rh = height;
-            if(bw)
-                document.getElementById("title").style.color = "#CCCCCC";
-            else
-                document.getElementById("title").style.color = "#202020";
         }
         else{
             rry = random(-height*.1, height*.1);
@@ -374,12 +373,11 @@ function knifer(){
         pg.fill(10);
     else
         pg.fill(90);
-    pg.push();
+
     pg.textFont(helvetica);
     pg.textAlign(LEFT, TOP);
     pg.textSize(50);
     pg.text('Knifer', 27, 20);
-    pg.pop();
 
 
     // !!!!!!!!!
@@ -387,7 +385,7 @@ function knifer(){
     // !!!!!!!!!
     // !!!!!!!!!
     // RENDERING
-    shaderOnCanvas(pg);
+    //shaderOnCanvas(pg);
     //fill(255,0,0);
     //ellipse(width/2, height/2, 20, 20);
 }
@@ -396,6 +394,8 @@ function knifer(){
 function shaderOnCanvas(pg){
     shader(blurShader);
     fill(255);
+    rect(-width/2, -height/2, width, height);
+    
     blurShader.setUniform('tex0', pg);
     blurShader.setUniform('texelSize', [1 / width, 1 / height]);
     blurShader.setUniform('grunge', random(1.6));
@@ -406,7 +406,6 @@ function shaderOnCanvas(pg){
     blurShader.setUniform('frq4', random(0, 1));
     blurShader.setUniform('frq5', random(0, 1));
     blurShader.setUniform('frq6', random(0, 1));
-    rect(-width/2, -height/2, width, height);
 }
 
 function mouseClicked(){
