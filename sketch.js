@@ -43,9 +43,10 @@ function setup(){
 function draw(){
     if(shouldReset || frameCount == 2){
         reset();
-        shaderOnCanvas(pg);
         shouldReset = false;
     }
+    
+    shaderOnCanvas(pg);
 
     //print(pg)
     //image(pg, -width/2, -height/2, width, height);
@@ -250,6 +251,18 @@ function knifer(){
     randomSeed(random(millis()));
     noiseSeed(random(millis()*12.314));
 
+    
+    blurShader.setUniform('tex0', pg);
+    blurShader.setUniform('texelSize', [1 / width, 1 / height]);
+    blurShader.setUniform('grunge', random(1.6));
+    blurShader.setUniform('grunge2', random(0.3, 0.6));
+    blurShader.setUniform('frq1', random(0.003, 0.008));
+    blurShader.setUniform('frq2', random(0, 1));
+    blurShader.setUniform('frq3', random(0, 1));
+    blurShader.setUniform('frq4', random(0, 1));
+    blurShader.setUniform('frq5', random(0, 1));
+    blurShader.setUniform('frq6', random(0, 1));
+
     pg.colorMode(HSB, 100);
     var bw = round(random(1)) == 0;
     while(true){
@@ -395,17 +408,6 @@ function shaderOnCanvas(pg){
     shader(blurShader);
     fill(255);
     rect(-width/2, -height/2, width, height);
-    
-    blurShader.setUniform('tex0', pg);
-    blurShader.setUniform('texelSize', [1 / width, 1 / height]);
-    blurShader.setUniform('grunge', random(1.6));
-    blurShader.setUniform('grunge2', random(0.3, 0.6));
-    blurShader.setUniform('frq1', random(0.003, 0.008));
-    blurShader.setUniform('frq2', random(0, 1));
-    blurShader.setUniform('frq3', random(0, 1));
-    blurShader.setUniform('frq4', random(0, 1));
-    blurShader.setUniform('frq5', random(0, 1));
-    blurShader.setUniform('frq6', random(0, 1));
 }
 
 function mouseClicked(){
