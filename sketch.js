@@ -20,17 +20,6 @@ function preload() {
 
 }
 
-function handleStart(){
-    if(width < height){
-        reset();
-    }
-}
-
-
-function handleEnd(){
-    print('end')
-}
-
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     pg = createGraphics(width, height);
@@ -416,6 +405,18 @@ function mouseClicked(){
         shouldReset = true;
     }
 }
+
+
+function handleStart(){
+    if(width < height){
+        shouldReset = true;
+    }
+}
+
+
+function handleEnd(){
+}
+
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
