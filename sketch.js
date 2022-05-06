@@ -1,5 +1,5 @@
 let canvas;
-var pg;
+var pg, click;
 
 
 var N;
@@ -14,6 +14,8 @@ let blurShader;
 
 var shouldReset = true;
 
+var firstClick = false;
+
 function preload() {
     helvetica = loadFont('assets/HelveticaNeueBd.ttf');
     blurShader = loadShader('assets/blur.vert', 'assets/blur.frag');
@@ -23,19 +25,38 @@ function preload() {
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     pg = createGraphics(width, height);
+    click = createGraphics(width, height);
 
     canvas.elt.addEventListener('touchstart', handleStart);
     canvas.elt.addEventListener('touchend', handleEnd);
 
+    click.colorMode(HSB, 100);
+    click.background(10);
+    click.textFont(helvetica);
+    click.textAlign(CENTER, CENTER);
+    click.fill(90);
+    if(width < height)
+        click.textSize(160);
+    else
+        click.textSize(200);
+    click.text('Click', width/2, height/2);
 }
+var firstReset = true;
 
 function draw(){
     if(shouldReset || frameCount == 2){
         reset();
         shouldReset = false;
     }
-    
-    shaderOnCanvas(pg);
+
+    if(!firstClick && millis() > 3400 && millis() < 3900){
+        shaderOnCanvas(click);
+    }
+    else{
+        shaderOnCanvas(pg);
+
+    }
+
 
     //print(pg)
     //image(pg, -width/2, -height/2, width, height);
@@ -241,7 +262,6 @@ function knifer(){
     noiseSeed(random(millis()*12.314));
 
     
-    blurShader.setUniform('tex0', pg);
     blurShader.setUniform('texelSize', [1 / width, 1 / height]);
     blurShader.setUniform('grunge', random(1.6));
     blurShader.setUniform('grunge2', random(0.3, 0.6));
@@ -394,7 +414,8 @@ function knifer(){
 }
 
 
-function shaderOnCanvas(pg){
+function shaderOnCanvas(tex){
+    blurShader.setUniform('tex0', tex);
     shader(blurShader);
     fill(255);
     rect(-width/2, -height/2, width, height);
@@ -404,6 +425,7 @@ function mouseClicked(){
     if(width > height){
         shouldReset = true;
     }
+    firstClick = true;
 }
 
 
@@ -411,10 +433,12 @@ function handleStart(){
     if(width < height){
         shouldReset = true;
     }
+    firstClick = true;
 }
 
 function keyPressed(){
     shouldReset = true;
+    firstClick = true;
 }
 
 
